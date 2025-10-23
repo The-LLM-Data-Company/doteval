@@ -52,7 +52,7 @@ target-version = "py311"
 select = ["E", "F", "I", "UP"]
 
 [project.urls]
-Homepage = "https://github.com/The-LLM-Data-Company/rubrics/"
-Repository = "https://github.com/The-LLM-Data-Company/rubrics"
-Issues = "https://github.com/The-LLM-Data-Company/rubrics/issues"
+Homepage = "https://github.com/The-LLM-Data-Company/rubric/"
+Repository = "https://github.com/The-LLM-Data-Company/rubric"
+Issues = "https://github.com/The-LLM-Data-Company/rubric/issues"
 
