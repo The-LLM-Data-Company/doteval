@@ -10,6 +10,15 @@ uv add rubric
 
 ## Usage
 
+1. **Set up environment variables:**
+
+   ```bash
+   cp .env.example .env
+   # Edit .env and add your API key
+   ```
+
+2. **Run the example below**
+
 ```python
 import asyncio
 import os
@@ -38,10 +47,10 @@ async def main():
     ])
 
     grader = PerCriterionGrader(
-        generate_fn=generate_with_async_openai, 
+        generate_fn=generate_with_async_openai,
         system_prompt="This overrides the default system prompt",
     )
-    
+
     result = await rubric.grade(
         to_grade="Your text to evaluate...",
         autograder=grader
@@ -73,6 +82,7 @@ grader = PerCriterionGrader(generate_fn=your_custom_function)
 
 **2. Override specific methods**
 Subclass any autograder and override:
+
 - `judge()` - Orchestrates LLM calls to evaluate criteria and parse responses into structured results
 - `generate()` - Wraps your `generate_fn` to customize how prompts are sent to the LLM
 - `aggregation()` - Transforms individual criterion results into a final score and optional report
