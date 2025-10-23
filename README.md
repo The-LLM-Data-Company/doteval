@@ -13,8 +13,7 @@ uv add rubric
 1. **Set up environment variables:**
 
 ```bash
-cp .env.example .env
-# Edit .env and add your API key
+export OPENAI_API_KEY=your_api_key_here
 ```
 
 2. **Run the example below**
