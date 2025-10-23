@@ -12,10 +12,10 @@ uv add rubric
 
 1. **Set up environment variables:**
 
-   ```bash
-   cp .env.example .env
-   # Edit .env and add your API key
-   ```
+```bash
+cp .env.example .env
+# Edit .env and add your API key
+```
 
 2. **Run the example below**
 
