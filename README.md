@@ -38,10 +38,10 @@ async def main():
     ])
 
     grader = PerCriterionGrader(
-        generate_fn=generate_with_async_openai, 
+        generate_fn=generate_with_async_openai,
         system_prompt="This overrides the default system prompt",
     )
-    
+
     result = await rubric.grade(
         to_grade="Your text to evaluate...",
         autograder=grader
@@ -73,6 +73,7 @@ grader = PerCriterionGrader(generate_fn=your_custom_function)
 
 **2. Override specific methods**
 Subclass any autograder and override:
+
 - `judge()` - Orchestrates LLM calls to evaluate criteria and parse responses into structured results
 - `generate()` - Wraps your `generate_fn` to customize how prompts are sent to the LLM
 - `aggregation()` - Transforms individual criterion results into a final score and optional report
@@ -83,11 +84,55 @@ Override the entire `grade()` method for complete end-to-end control over the gr
 ## Loading Rubrics
 
 ```python
+# Direct construction
 rubric = Rubric([Criterion(...)])
+
+# From dictionary
 rubric = Rubric.from_dict([...])
-rubric = Rubric.from_json('{"criteria": [...]}')
-rubric = Rubric.from_yaml('...')
+
+# From JSON string
+rubric = Rubric.from_json('[{"weight": 10.0, "requirement": "Example requirement"}]')
+
+# From YAML string
+yaml_data = '''
+- weight: 10.0
+  requirement: "Example requirement"
+'''
+rubric = Rubric.from_yaml(yaml_data)
+
+# From files
+rubric = Rubric.from_file('rubric.json')
 rubric = Rubric.from_file('rubric.yaml')
+```
+
+### JSON Format
+
+```json
+[
+  {
+    "weight": 10.0,
+    "requirement": "States Q4 2023 base margin as 17.2%"
+  },
+  {
+    "weight": 8.0,
+    "requirement": "Explicitly uses Shapley attribution for decomposition"
+  },
+  {
+    "weight": -15.0,
+    "requirement": "Uses total deliveries instead of cash-only deliveries"
+  }
+]
+```
+
+### YAML Format
+
+```yaml
+- weight: 10.0
+  requirement: "States Q4 2023 base margin as 17.2%"
+- weight: 8.0
+  requirement: "Explicitly uses Shapley attribution for decomposition"
+- weight: -15.0
+  requirement: "Uses total deliveries instead of cash-only deliveries"
 ```
 
 ## Requirements
