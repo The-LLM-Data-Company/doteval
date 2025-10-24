@@ -136,7 +136,7 @@ rubric = Rubric([
     Criterion(weight=-15.0, requirement="Uses total deliveries instead of cash-only deliveries")
 ])
 
-# From dictionary
+# From list of dictionaries
 rubric = Rubric.from_dict([
     {"weight": 10.0, "requirement": "States Q4 2023 base margin as 17.2%"},
     {"weight": 8.0, "requirement": "Explicitly uses Shapley attribution for decomposition"},
