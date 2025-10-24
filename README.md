@@ -68,6 +68,31 @@ asyncio.run(main())
 - `PerCriterionOneShotGrader` - Evaluates all criteria in a single LLM call
 - `RubricAsJudgeGrader` - Holistic evaluation, LLM returns final score directly
 
+### Default System Prompts
+
+Each autograder uses a specialized system prompt optimized for its evaluation approach:
+
+**PerCriterionGrader** - Detailed criterion-by-criterion evaluation with strict JSON formatting requirements. The prompt instructs the LLM to evaluate each criterion independently, handling both positive and negative criteria with specific response formats.
+
+**PerCriterionOneShotGrader** - Streamlined prompt for evaluating all criteria in a single response. Focuses on providing verdicts (MET/UNMET) and explanations for each criterion in a structured JSON format.
+
+**RubricAsJudgeGrader** - Holistic evaluation prompt that asks the LLM to consider the output as a whole and provide a single overall score from 0-100, taking into account the weights of all criteria.
+
+You can view the complete default prompts in the source files:
+
+- [`per_criterion_grader.py`](src/rubric/autograders/per_criterion_grader.py#L10-L55)
+- [`per_criterion_one_shot_grader.py`](src/rubric/autograders/per_criterion_one_shot_grader.py#L11-L31)
+- [`rubric_as_judge_grader.py`](src/rubric/autograders/rubric_as_judge_grader.py#L11-L22)
+
+**Customizing System Prompts:** You can override the default system prompt by passing a `system_prompt` parameter to any autograder:
+
+```python
+grader = PerCriterionGrader(
+    generate_fn=your_function,
+    system_prompt="Your custom system prompt here"
+)
+```
+
 ## Customization
 
 You can customize grading at multiple levels:
