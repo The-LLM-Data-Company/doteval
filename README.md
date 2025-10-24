@@ -1,3 +1,15 @@
+<p align="center">
+  <a href="https://pypi.org/project/rubric/">
+    <img src="https://img.shields.io/pypi/v/rubric" alt="PyPI version" />
+  </a>
+  <a href="https://pypi.org/project/rubric/">
+    <img src="https://img.shields.io/pypi/pyversions/rubric" alt="Python versions" />
+  </a>
+  <a href="https://github.com/The-LLM-Data-Company/rubric/blob/main/LICENSE">
+    <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
+  </a>
+</p>
+
 # Rubric
 
 A Python library for LLM-based evaluation using weighted rubrics.
