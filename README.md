@@ -117,11 +117,63 @@ Override the entire `grade()` method for complete end-to-end control over the gr
 ## Loading Rubrics
 
 ```python
-rubric = Rubric([Criterion(...)])
-rubric = Rubric.from_dict([...])
-rubric = Rubric.from_json('{"criteria": [...]}')
-rubric = Rubric.from_yaml('...')
+# Direct construction
+rubric = Rubric([
+    Criterion(weight=10.0, requirement="States Q4 2023 base margin as 17.2%"),
+    Criterion(weight=8.0, requirement="Explicitly uses Shapley attribution for decomposition"),
+    Criterion(weight=-15.0, requirement="Uses total deliveries instead of cash-only deliveries")
+])
+
+# From dictionary
+rubric = Rubric.from_dict([
+    {"weight": 10.0, "requirement": "States Q4 2023 base margin as 17.2%"},
+    {"weight": 8.0, "requirement": "Explicitly uses Shapley attribution for decomposition"},
+    {"weight": -15.0, "requirement": "Uses total deliveries instead of cash-only deliveries"}
+])
+
+# From JSON string
+rubric = Rubric.from_json('[{"weight": 10.0, "requirement": "Example requirement"}]')
+
+# From YAML string
+yaml_data = '''
+- weight: 10.0
+  requirement: "Example requirement"
+'''
+rubric = Rubric.from_yaml(yaml_data)
+
+# From files
+rubric = Rubric.from_file('rubric.json')
 rubric = Rubric.from_file('rubric.yaml')
+```
+
+### JSON Format
+
+```json
+[
+  {
+    "weight": 10.0,
+    "requirement": "States Q4 2023 base margin as 17.2%"
+  },
+  {
+    "weight": 8.0,
+    "requirement": "Explicitly uses Shapley attribution for decomposition"
+  },
+  {
+    "weight": -15.0,
+    "requirement": "Uses total deliveries instead of cash-only deliveries"
+  }
+]
+```
+
+### YAML Format
+
+```yaml
+- weight: 10.0
+  requirement: "States Q4 2023 base margin as 17.2%"
+- weight: 8.0
+  requirement: "Explicitly uses Shapley attribution for decomposition"
+- weight: -15.0
+  requirement: "Uses total deliveries instead of cash-only deliveries"
 ```
 
 ## Requirements
