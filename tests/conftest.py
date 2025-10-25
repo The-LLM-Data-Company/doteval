@@ -126,6 +126,6 @@ def one_shot_generate_fn(sample_criteria: CriterionList) -> GenerateFn:
 @pytest.fixture
 def rubric_as_judge_generate_fn() -> GenerateFn:
     async def _generate(system_prompt: str, user_prompt: str) -> str:
-        return json.dumps({"overall_score": 135.0})
+        return json.dumps({"overall_score": 0.85})
 
     return _generate

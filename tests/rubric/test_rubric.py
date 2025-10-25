@@ -68,10 +68,10 @@ async def test_rubric(per_criterion_generate_fn):
         assert correctness_report is not None, f"Item {idx + 1}: Correctness report is None"
         assert formatting_report is not None, f"Item {idx + 1}: Formatting report is None"
 
-        assert 0 <= correctness_report.score <= 100, (
+        assert 0 <= correctness_report.score <= 1, (
             f"Item {idx + 1}: Correctness score {correctness_report.score} out of range"
         )
-        assert 0 <= formatting_report.score <= 100, (
+        assert 0 <= formatting_report.score <= 1, (
             f"Item {idx + 1}: Formatting score {formatting_report.score} out of range"
         )
 

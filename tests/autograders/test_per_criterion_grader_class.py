@@ -11,7 +11,7 @@ async def test_per_criterion_grader_class_integration(
 
     report = await sample_rubric.grade(sample_output, autograder=grader)
 
-    assert report.score == pytest.approx(87.5)
+    assert report.score == pytest.approx(0.875)
     assert report.report is not None
     assert len(report.report) == len(sample_rubric.rubric)
     assert [criterion.verdict for criterion in report.report] == [
@@ -63,7 +63,7 @@ async def test_per_criterion_grader_with_negative_criterion_unmet(sample_rubric)
 
     report = await sample_rubric.grade("Test", autograder=grader)
 
-    assert report.score == pytest.approx(100.0)
+    assert report.score == pytest.approx(1.0)
     assert report.report is not None
     verdicts = [criterion.verdict for criterion in report.report]
     assert verdicts == ["MET", "MET", "MET", "UNMET"]

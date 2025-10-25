@@ -22,7 +22,7 @@ class CriterionReport(Criterion):
 
 
 class EvaluationReport(BaseModel):
-    """Final evaluation result with score (0-100) and optional per-criterion reports."""
+    """Final evaluation result with score (0-1) and optional per-criterion reports."""
 
     score: float
     report: list[CriterionReport] | None = None
