@@ -11,14 +11,14 @@ from rubric.utils import parse_json_to_dict
 DEFAULT_SYSTEM_PROMPT = """You are an expert evaluator. You will be given an output and a list \
 of criteria to evaluate it against.
 Your job is to evaluate the output holistically against all criteria and provide an \
-overall score from 0-100 that considers the weights of each criterion.
+overall score from 0-1 that considers the weights of each criterion.
 
 Do NOT evaluate each criterion individually - instead, consider the output as a whole \
 and how well it satisfies the overall requirements.
 
 Respond ONLY with valid JSON in this exact format:
 {
-  "overall_score": <number 0-100>
+  "overall_score": <number 0-1>
 }"""
 
 
@@ -60,5 +60,5 @@ Provide your evaluation as JSON only with just the overall score."""
         return overall_score
 
     async def aggregate(self, judge_results: float) -> EvaluationReport:
-        clamped_score = max(0.0, min(100.0, judge_results))
+        clamped_score = max(0.0, min(1.0, judge_results))
         return EvaluationReport(score=clamped_score, report=None)

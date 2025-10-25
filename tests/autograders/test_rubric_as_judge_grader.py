@@ -11,7 +11,7 @@ async def test_rubric_as_judge_grader_class_integration(
 
     report = await sample_rubric.grade(sample_output, autograder=grader)
 
-    assert report.score == pytest.approx(100.0)
+    assert report.score == pytest.approx(0.85)
     assert report.report is None
 
 

@@ -111,7 +111,7 @@ class PerCriterionGrader(Autograder):
 
     async def aggregate(self, judge_results: list[CriterionReport]) -> EvaluationReport:
         score = 0.0
-        max_score = 100.0
+        max_score = 1.0
 
         total_positive_weight = sum(max(0.0, report.weight) for report in judge_results)
         weighted_score_sum = sum(
@@ -119,7 +119,7 @@ class PerCriterionGrader(Autograder):
         )
 
         if total_positive_weight > 0:
-            raw_score = (100.0 * weighted_score_sum) / total_positive_weight
+            raw_score = weighted_score_sum / total_positive_weight
             score = max(0.0, min(max_score, raw_score))
 
         return EvaluationReport(
