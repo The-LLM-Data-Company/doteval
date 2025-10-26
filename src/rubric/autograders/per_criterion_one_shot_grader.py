@@ -107,7 +107,7 @@ Provide your evaluation as JSON only."""
 
         score = 0.0
         if total_positive_weight > 0:
-            raw_score = (100.0 * weighted_score_sum) / total_positive_weight
-            score = max(0.0, min(100.0, raw_score))
+            raw_score = weighted_score_sum / total_positive_weight
+            score = max(0.0, min(1.0, raw_score))
 
         return EvaluationReport(score=score, report=judge_results)

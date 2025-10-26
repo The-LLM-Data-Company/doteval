@@ -60,5 +60,6 @@ Provide your evaluation as JSON only with just the overall score."""
         return overall_score
 
     async def aggregate(self, judge_results: float) -> EvaluationReport:
-        clamped_score = max(0.0, min(100.0, judge_results))
+        normalized_score = judge_results / 100.0
+        clamped_score = max(0.0, min(1.0, normalized_score))
         return EvaluationReport(score=clamped_score, report=None)
