@@ -33,7 +33,9 @@ class RubricAsJudgeGrader(Autograder):
         criteria_lines = []
         for index, criterion in enumerate(rubric, start=1):
             criterion_type = (
-                "NEGATIVE (should NOT)" if criterion.weight < 0 else "POSITIVE (should)"
+                "NEGATIVE (MET if issue present)"
+                if criterion.weight < 0
+                else "POSITIVE (MET if criterion met)"
             )
             criteria_lines.append(
                 f"{index}. [{criterion_type}] (weight: {criterion.weight}) {criterion.requirement}"

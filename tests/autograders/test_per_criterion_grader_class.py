@@ -55,7 +55,7 @@ async def test_per_criterion_grader_with_negative_criterion_unmet(sample_rubric)
         )
 
         if criterion_type == "negative":
-            return json.dumps({"issue_present": True, "explanation": "Issue detected"})
+            return json.dumps({"issue_present": False, "explanation": "No issue detected"})
         else:
             return json.dumps({"criteria_met": True, "explanation": "Requirement met"})
 

@@ -82,7 +82,7 @@ class PerCriterionGrader(Autograder):
             result = parse_json_to_dict(response)
 
             if criterion_type == "negative":
-                passed = not result.get("issue_present", True)
+                passed = result.get("issue_present", False)
                 explanation = result.get("explanation", "No explanation provided")
             else:
                 passed = result.get("criteria_met", False)

@@ -62,7 +62,7 @@ def per_criterion_generate_fn() -> GenerateFn:
         "Output is written in complete sentences",
     }
     negative_issue_present = {
-        "Output contains profanity or offensive language": False,
+        "Output contains profanity or offensive language": True,
     }
 
     async def _generate(system_prompt: str, user_prompt: str) -> str:
@@ -70,7 +70,7 @@ def per_criterion_generate_fn() -> GenerateFn:
         criterion_type = _extract_field(type_pattern, user_prompt).lower()
 
         if criterion_type == "negative":
-            issue_present = negative_issue_present.get(criterion_text, True)
+            issue_present = negative_issue_present.get(criterion_text, False)
             explanation = (
                 "Detected disallowed content in the output."
                 if issue_present
