@@ -62,13 +62,20 @@ class PerCriterionGrader(Autograder):
         super().__init__(generate_fn=generate_fn)
         self.system_prompt = system_prompt
 
-    async def _judge_single_criterion(self, criterion: Criterion, to_grade: str) -> CriterionReport:
+    async def _judge_single_criterion(
+        self, criterion: Criterion, to_grade: str, query: str | None = None
+    ) -> CriterionReport:
         criterion_type = "negative" if criterion.weight < 0 else "positive"
-        user_prompt = f"""<criterion_type>{criterion_type}</criterion_type>
+        query_text = f"<input>{query}</input>" if query else ""
+        user_prompt = f"""<criterion_type>
+{criterion_type}
+</criterion_type>
 
 <criterion>
 {criterion.requirement}
 </criterion>
+
+{query_text}
 
 <output>
 {to_grade}
@@ -103,9 +110,11 @@ class PerCriterionGrader(Autograder):
                 weight=criterion.weight,
             )
 
-    async def judge(self, to_grade: str, rubric: list[Criterion]) -> list[CriterionReport]:
+    async def judge(
+        self, to_grade: str, rubric: list[Criterion], query: str | None = None
+    ) -> list[CriterionReport]:
         criterion_tasks = [
-            self._judge_single_criterion(criterion, to_grade) for criterion in rubric
+            self._judge_single_criterion(criterion, to_grade, query) for criterion in rubric
         ]
         return list(await asyncio.gather(*criterion_tasks))
 

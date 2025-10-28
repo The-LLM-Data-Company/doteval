@@ -24,7 +24,7 @@ class Autograder(ABC):
         return await self.generate_fn(system_prompt, user_prompt, **kwargs)
 
     @abstractmethod
-    async def judge(self, to_grade: str, rubric: list[Criterion]) -> Any:
+    async def judge(self, to_grade: str, rubric: list[Criterion], query: str | None = None) -> Any:
         """Collect raw judge results for the provided submission."""
         pass
 
@@ -33,11 +33,13 @@ class Autograder(ABC):
         """Transform judge results into an EvaluationReport."""
         pass
 
-    async def grade(self, to_grade: str, rubric: list[Criterion]) -> EvaluationReport:
+    async def grade(
+        self, to_grade: str, rubric: list[Criterion], query: str | None = None
+    ) -> EvaluationReport:
         """Grade the submission against the rubric. This is the main entry point for the autograder.
         You can override this method to implement custom grading logic outside the judge and
         aggregate steps.
         """
 
-        judge_results = await self.judge(to_grade, rubric)
+        judge_results = await self.judge(to_grade, rubric, query)
         return await self.aggregate(judge_results)

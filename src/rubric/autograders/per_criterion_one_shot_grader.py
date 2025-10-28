@@ -38,7 +38,9 @@ class PerCriterionOneShotGrader(Autograder):
         super().__init__(generate_fn=generate_fn)
         self.system_prompt = system_prompt
 
-    async def judge(self, to_grade: str, rubric: list[Criterion]) -> list[CriterionReport]:
+    async def judge(
+        self, to_grade: str, rubric: list[Criterion], query: str | None = None
+    ) -> list[CriterionReport]:
         criteria_lines = []
         for index, criterion in enumerate(rubric, start=1):
             criterion_type = (
@@ -51,12 +53,17 @@ class PerCriterionOneShotGrader(Autograder):
             )
 
         criteria_text = "\n".join(criteria_lines)
-        user_prompt = f"""Evaluate this output against the following criteria:
-
+        query_text = f"<input>{query}</input>" if query else ""
+        user_prompt = f"""Evaluate the output against the following criteria:
+<criteria>
 {criteria_text}
+</criteria>
 
-Output to evaluate:
+{query_text}
+
+<output>
 {to_grade}
+</output>
 
 Provide your evaluation as JSON only."""
 
