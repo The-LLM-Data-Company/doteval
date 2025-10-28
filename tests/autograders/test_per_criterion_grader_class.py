@@ -1,6 +1,7 @@
 import pytest
 
 from rubric.autograders import PerCriterionGrader
+from rubric.types import EvaluationReport
 
 
 @pytest.mark.asyncio
@@ -9,16 +10,18 @@ async def test_per_criterion_grader_class_integration(
 ):
     grader = PerCriterionGrader(generate_fn=per_criterion_generate_fn)
 
-    report = await sample_rubric.grade(sample_output, autograder=grader)
+    report: EvaluationReport = await sample_rubric.grade(sample_output, autograder=grader)
 
-    assert report.score == pytest.approx(0.875)
+    print(report.report)
+
+    assert report.score == pytest.approx(1.0)
     assert report.report is not None
     assert len(report.report) == len(sample_rubric.rubric)
     assert [criterion.verdict for criterion in report.report] == [
         "MET",
         "MET",
         "MET",
-        "MET",
+        "UNMET",
     ]
 
 
@@ -55,9 +58,10 @@ async def test_per_criterion_grader_with_negative_criterion_unmet(sample_rubric)
         )
 
         if criterion_type == "negative":
-            return json.dumps({"issue_present": False, "explanation": "No issue detected"})
+            # For negative criteria: criterion_status="UNMET" means the error is NOT present (good!)
+            return json.dumps({"criterion_status": "UNMET", "explanation": "Error not present"})
         else:
-            return json.dumps({"criteria_met": True, "explanation": "Requirement met"})
+            return json.dumps({"criterion_status": "MET", "explanation": "Requirement met"})
 
     grader = PerCriterionGrader(generate_fn=generate_with_issue)
 

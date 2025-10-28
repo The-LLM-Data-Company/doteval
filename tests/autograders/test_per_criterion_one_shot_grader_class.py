@@ -11,14 +11,14 @@ async def test_per_criterion_one_shot_grader_class_integration(
 
     report = await sample_rubric.grade(sample_output, autograder=grader)
 
-    assert report.score == pytest.approx(0.875)
+    assert report.score == pytest.approx(1.0)
     assert report.report is not None
     assert len(report.report) == len(sample_rubric.rubric)
     assert [criterion.verdict for criterion in report.report] == [
         "MET",
         "MET",
         "MET",
-        "MET",
+        "UNMET",
     ]
 
 
@@ -50,10 +50,14 @@ async def test_per_criterion_one_shot_grader_with_negative_criterion_unmet(sampl
         return json.dumps(
             {
                 "criteria_evaluations": [
-                    {"criterion_number": 1, "verdict": "MET", "reason": "Test"},
-                    {"criterion_number": 2, "verdict": "MET", "reason": "Test"},
-                    {"criterion_number": 3, "verdict": "MET", "reason": "Test"},
-                    {"criterion_number": 4, "verdict": "UNMET", "reason": "Issue detected"},
+                    {"criterion_number": 1, "criterion_status": "MET", "explanation": "Test"},
+                    {"criterion_number": 2, "criterion_status": "MET", "explanation": "Test"},
+                    {"criterion_number": 3, "criterion_status": "MET", "explanation": "Test"},
+                    {
+                        "criterion_number": 4,
+                        "criterion_status": "UNMET",
+                        "explanation": "Error not present",
+                    },
                 ]
             }
         )
