@@ -7,23 +7,22 @@ from rubric.autograders import Autograder
 from rubric.types import Criterion, CriterionReport, EvaluationReport, GenerateFn
 from rubric.utils import parse_json_to_dict
 
-DEFAULT_SYSTEM_PROMPT = """You are evaluating whether a specific criterion is present in the \
-provided output. 
+DEFAULT_SYSTEM_PROMPT = """You are evaluating an output for a given query against a single criterion.
 
-IMPORTANT: The <criterion_type> field tells you whether this criterion describes something \
-desirable (positive) or undesirable (negative), but your job is THE SAME for both types: \
-determine if the thing described in the criterion IS ACTUALLY PRESENT in the output.
+You will receive the output to evaluate, a single criterion to check, and a <criterion_type> field indicating if the criterion is positive or negative.
 
-"criterion_status" has NOTHING to do with quality or correctness. It only means:
-- "MET": The thing described in the criterion IS present/occurring in the output
-- "UNMET": The thing described in the criterion IS NOT present/occurring in the output
+CRITERION TYPES:
+The <criterion_type> field tells you whether this criterion describes something desirable (positive) or undesirable (negative). Your job is THE SAME for both types: determine if the thing described in the criterion is actually present in the output.
 
-CRITICAL DISTINCTION FOR NEGATIVE CRITERIA:
-Negative criteria describe ACTIVE ERRORS or MISTAKES that the output is making. You must \
-distinguish between:
-- MET (criterion_status: "MET"): The output ADVOCATES, STATES, or RECOMMENDS the problematic thing
-- UNMET (criterion_status: "UNMET"): The output does NOT make this error, OR it mentions the thing \
-only to WARN AGAINST it, CONTRAST with it, or explain why it's WRONG
+POSITIVE CRITERIA:
+Positive criteria describe desired traits, requirements, or content that should be present.
+- MET (criterion_status: "MET"): The output contains/satisfies the requirement
+- UNMET (criterion_status: "UNMET"): The output does not contain/satisfy the requirement
+
+NEGATIVE CRITERIA:
+Negative criteria describe active errors or mistakes that the output is making.
+- MET (criterion_status: "MET"): The output advocates, states, or recommends the problematic thing
+- UNMET (criterion_status: "UNMET"): The output does NOT make this error, OR it mentions the thing only to warn against it or mention why it's wrong
 
 Examples of what does NOT count as MET for negative criteria:
 - "This is often misdiagnosed as X, but it's actually Y" → NOT stating it's X (UNMET)
@@ -31,7 +30,7 @@ Examples of what does NOT count as MET for negative criteria:
 - "Unlike X, the correct approach is Y" → NOT advocating for X (UNMET)
 - "A common mistake is thinking X" → NOT claiming X is correct (UNMET)
 
-Evaluation rules:
+EVALUATION RULES:
 - For numerical values: Check if they fall within specified ranges or match exactly as required.
 - For factual claims: Verify the information is present and accurate, regardless of exact phrasing.
 - For required elements: Confirm presence, counting precisely when numbers are specified.
@@ -41,7 +40,12 @@ Evaluation rules:
 - Accept semantically equivalent statements or implications where appropriate.
 - Pay careful attention to negation, warnings, and contrasts.
 
-Your response must be valid JSON with this exact format (regardless of criterion type):
+CRITERION STATUS:
+"criterion_status" has *nothing* to do with quality or correctness. It only means:
+- "MET": The thing described in the criterion IS present/occurring in the output
+- "UNMET": The thing described in the criterion IS NOT present/occurring in the output
+
+Your response must be valid JSON with this exact format:
 
 {
 "criterion_status": "MET",
@@ -50,10 +54,11 @@ Your response must be valid JSON with this exact format (regardless of criterion
 
 Examples:
 
-Positive criterion: "Includes a summary of Q2 performance"
+Positive criterion: "States Q4 2023 base margin as 17.2%"
+Output: "The Q4 2023 base margin was 17.2% before adjustments."
 {
 "criterion_status": "MET",
-"explanation": "The output includes a clear summary of Q2 performance, as required."
+"explanation": "The output states Q4 2023 base margin as 17.2%, as required."
 }
 
 Negative criterion: "States that the patient has diabetes"
@@ -61,13 +66,6 @@ Output: "This patient does not have diabetes."
 {
 "criterion_status": "UNMET",
 "explanation": "The output explicitly states the patient does NOT have diabetes, so this error is not present."
-}
-
-Negative criterion: "Recommends ignoring safety protocols"
-Output: "A common mistake is ignoring safety protocols, which can lead to accidents."
-{
-"criterion_status": "UNMET",
-"explanation": "The output warns against ignoring safety protocols rather than recommending it, so this error is not present."
 }
 
 Return only raw JSON starting with {, no back-ticks, no 'json' prefix."""
@@ -106,11 +104,8 @@ class PerCriterionGrader(Autograder):
 
             result = parse_json_to_dict(response)
 
-            # Use unified criterion_status field for both positive and negative criteria
             status = result.get("criterion_status", "UNMET")
             explanation = result.get("explanation", "No explanation provided")
-
-            # Normalize to uppercase and check if it's MET
             verdict = "MET" if status.upper() == "MET" else "UNMET"
 
             return CriterionReport(

@@ -107,16 +107,17 @@ def one_shot_generate_fn(sample_criteria: CriterionList) -> GenerateFn:
         evaluations = []
         for index, criterion in enumerate(sample_criteria, start=1):
             if criterion.weight < 0:
-                verdict = "MET"
-                reason = "No disallowed content found in the submission."
+                # For negative criteria: UNMET means error is NOT present (good)
+                criterion_status = "UNMET"
+                explanation = "Error not present in the submission."
             else:
-                verdict = "MET"
-                reason = "Requirement satisfied by the submission."
+                criterion_status = "MET"
+                explanation = "Requirement satisfied by the submission."
             evaluations.append(
                 {
                     "criterion_number": index,
-                    "verdict": verdict,
-                    "reason": reason,
+                    "criterion_status": criterion_status,
+                    "explanation": explanation,
                 }
             )
 
