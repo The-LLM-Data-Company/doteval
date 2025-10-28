@@ -67,18 +67,61 @@ async def main():
         autograder=grader
     )
 
-    print(f"Score: {result.score}/100")
+    print(f"Score: {result.score:.2f}")  # Score is 0.0-1.0
     for criterion in result.report:
-        print(f"  {criterion.verdict}: {criterion.requirement}")
+        print(f"  [{criterion.verdict}] {criterion.requirement}")
+        print(f"    → {criterion.reason}")
 
 asyncio.run(main())
 ```
 
 ## Autograder Strategies
 
-- `PerCriterionGrader` - Evaluates each criterion in parallel LLM calls
-- `PerCriterionOneShotGrader` - Evaluates all criteria in a single LLM call
-- `RubricAsJudgeGrader` - Holistic evaluation, LLM returns final score directly
+### PerCriterionGrader
+Evaluates each criterion in parallel inference calls.
+
+**Scoring Formula:**
+
+For each criterion $i$:
+- If verdict = MET, contribution = $w_i$
+- If verdict = UNMET, contribution = 0
+
+Final score:
+
+$$
+\text{score} = \max\left(0, \min\left(1, \frac{\sum_{i=1}^{n} \mathbb{1}[\text{verdict}_i = \text{MET}] \cdot w_i}{\sum_{i=1}^{n} \max(0, w_i)}\right)\right)
+$$
+
+Where:
+- $w_i$ = weight of criterion $i$ (can be negative for error criteria)
+- $\mathbb{1}[\text{verdict}_i = \text{MET}]$ = 1 if criterion is MET, 0 otherwise
+- Denominator = $\sum_{i=1}^{n} \max(0, w_i)$ (sum of all positive weights only)
+- Numerator = sum of weights for MET criteria (positive weights add, negative weights subtract)
+- Result clamped to [0, 1]
+
+### PerCriterionOneShotGrader
+PerCriterionOneShotGrader makes 1 inference call that evaluates all criteria together and returns a structured output, unlike PerCriterionGrader which makes $n$ inference calls. 
+
+**Scoring Formula:**
+
+Same as PerCriterionGrader:
+
+$$
+\text{score} = \max\left(0, \min\left(1, \frac{\sum_{i=1}^{n} \mathbb{1}[\text{verdict}_i = \text{MET}] \cdot w_i}{\sum_{i=1}^{n} \max(0, w_i)}\right)\right)
+$$
+
+### RubricAsJudgeGrader
+Holistic evaluation where the model returns a final score directly.
+
+**Scoring Formula:**
+
+The model is instructed to mentally evaluate all criteria and return a score from 0-100:
+
+$$
+\text{score} = \frac{\text{LLM-judged score}}{100}
+$$
+
+Clamped to [0, 1]. The model is guided to use the same weighted scoring logic, but computes the result in-context rather than aggregating score post-hoc.
 
 ### Default System Prompts
 
@@ -121,7 +164,7 @@ Subclass any autograder and override:
 
 - `judge()` - Orchestrates LLM calls to evaluate criteria and parse responses into structured results
 - `generate()` - Wraps your `generate_fn` to customize how prompts are sent to the LLM
-- `aggregation()` - Transforms individual criterion results into a final score and optional report
+- `aggregate()` - Transforms individual criterion results into a final score and optional report
 
 **3. Full control**
 Override the entire `grade()` method for complete end-to-end control over the grading process.
