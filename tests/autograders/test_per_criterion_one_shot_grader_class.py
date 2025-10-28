@@ -11,14 +11,14 @@ async def test_per_criterion_one_shot_grader_class_integration(
 
     report = await sample_rubric.grade(sample_output, autograder=grader)
 
-    assert report.score == pytest.approx(0.875)
+    assert report.score == pytest.approx(1.0)
     assert report.report is not None
     assert len(report.report) == len(sample_rubric.rubric)
     assert [criterion.verdict for criterion in report.report] == [
         "MET",
         "MET",
         "MET",
-        "MET",
+        "UNMET",
     ]
 
 

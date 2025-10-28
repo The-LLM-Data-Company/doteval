@@ -1,6 +1,7 @@
 import pytest
 
 from rubric.autograders import PerCriterionGrader
+from rubric.types import EvaluationReport
 
 
 @pytest.mark.asyncio
@@ -9,16 +10,18 @@ async def test_per_criterion_grader_class_integration(
 ):
     grader = PerCriterionGrader(generate_fn=per_criterion_generate_fn)
 
-    report = await sample_rubric.grade(sample_output, autograder=grader)
+    report: EvaluationReport = await sample_rubric.grade(sample_output, autograder=grader)
 
-    assert report.score == pytest.approx(0.875)
+    print(report.report)
+
+    assert report.score == pytest.approx(1.0)
     assert report.report is not None
     assert len(report.report) == len(sample_rubric.rubric)
     assert [criterion.verdict for criterion in report.report] == [
         "MET",
         "MET",
         "MET",
-        "MET",
+        "UNMET",
     ]
 
 

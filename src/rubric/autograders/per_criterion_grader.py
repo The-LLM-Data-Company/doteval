@@ -7,12 +7,16 @@ from rubric.autograders import Autograder
 from rubric.types import Criterion, CriterionReport, EvaluationReport, GenerateFn
 from rubric.utils import parse_json_to_dict
 
-DEFAULT_SYSTEM_PROMPT = """You are evaluating an output for a given query against a single criterion.
+DEFAULT_SYSTEM_PROMPT = """You are evaluating an output for a given query against a single \
+criterion.
 
-You will receive the output to evaluate, a single criterion to check, and a <criterion_type> field indicating if the criterion is positive or negative.
+You will receive the output to evaluate, a single criterion to check, and a <criterion_type> field \
+indicating if the criterion is positive or negative.
 
 CRITERION TYPES:
-The <criterion_type> field tells you whether this criterion describes something desirable (positive) or undesirable (negative). Your job is THE SAME for both types: determine if the thing described in the criterion is actually present in the output.
+The <criterion_type> field tells you whether this criterion describes something desirable \
+(positive) or undesirable (negative). Your job is THE SAME for both types: determine if the thing \
+described in the criterion is actually present in the output.
 
 POSITIVE CRITERIA:
 Positive criteria describe desired traits, requirements, or content that should be present.
@@ -22,7 +26,8 @@ Positive criteria describe desired traits, requirements, or content that should 
 NEGATIVE CRITERIA:
 Negative criteria describe active errors or mistakes that the output is making.
 - MET (criterion_status: "MET"): The output advocates, states, or recommends the problematic thing
-- UNMET (criterion_status: "UNMET"): The output does NOT make this error, OR it mentions the thing only to warn against it or mention why it's wrong
+- UNMET (criterion_status: "UNMET"): The output does NOT make this error, OR it mentions the thing \
+only to warn against it or mention why it's wrong
 
 Examples of what does NOT count as MET for negative criteria:
 - "This is often misdiagnosed as X, but it's actually Y" → NOT stating it's X (UNMET)
@@ -65,7 +70,8 @@ Negative criterion: "States that the patient has diabetes"
 Output: "This patient does not have diabetes."
 {
 "criterion_status": "UNMET",
-"explanation": "The output explicitly states the patient does NOT have diabetes, so this error is not present."
+"explanation": "The output explicitly states the patient does NOT have diabetes, so this error is \
+not present."
 }
 
 Return only raw JSON starting with {, no back-ticks, no 'json' prefix."""

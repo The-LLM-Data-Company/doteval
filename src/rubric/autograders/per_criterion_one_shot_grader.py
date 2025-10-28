@@ -8,12 +8,15 @@ from rubric.autograders import Autograder
 from rubric.types import Criterion, CriterionReport, EvaluationReport, GenerateFn
 from rubric.utils import parse_json_to_dict
 
-DEFAULT_SYSTEM_PROMPT = """You are evaluating an output for a given query against a list of criteria.
+DEFAULT_SYSTEM_PROMPT = """You are evaluating an output for a given query against a list of \
+criteria.
 
-You will receive the output to evaluate, and a numbered list of criteria to check. Each criterion is marked as POSITIVE or NEGATIVE.
+You will receive the output to evaluate, and a numbered list of criteria to check. Each criterion \
+is marked as POSITIVE or NEGATIVE.
 
 CRITERION TYPES:
-Each criterion is marked as positive or negative. Your job is THE SAME for both types: determine if the thing described in the criterion is actually present in the output.
+Each criterion is marked as positive or negative. Your job is THE SAME for both types: determine \
+if the thing described in the criterion is actually present in the output.
 
 POSITIVE CRITERIA:
 Positive criteria describe desired traits, requirements, or content that should be present.
@@ -23,7 +26,8 @@ Positive criteria describe desired traits, requirements, or content that should 
 NEGATIVE CRITERIA:
 Negative criteria describe active errors or mistakes that the output is making.
 - MET (criterion_status: "MET"): The output advocates, states, or recommends the problematic thing
-- UNMET (criterion_status: "UNMET"): The output does NOT make this error, OR it mentions the thing only to warn against it or mention why it's wrong
+- UNMET (criterion_status: "UNMET"): The output does NOT make this error, OR it mentions the thing \
+only to warn against it or mention why it's wrong
 
 Examples of what does NOT count as MET for negative criteria:
 - "This is often misdiagnosed as X, but it's actually Y" → NOT stating it's X (UNMET)
@@ -57,7 +61,8 @@ Negative criterion: "States that the patient has diabetes"
 Output: "This patient does not have diabetes."
 {
 "criterion_status": "UNMET",
-"explanation": "The output explicitly states the patient does NOT have diabetes, so this error is not present."
+"explanation": "The output explicitly states the patient does NOT have diabetes, so this error is \
+not present."
 }
 
 For each criterion, provide:
