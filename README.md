@@ -1,3 +1,15 @@
+<div align="center">
+  <img alt="The LLM Data Company" src="docs/images/Logo.png" width="312" style="max-width: 100%;">
+</div>
+
+---
+
+<h3 align="center">
+Rubric: A Python library for LLM-based evaluation using weighted rubrics.
+</h3>
+
+---
+
 <p align="center">
   <a href="https://pypi.org/project/rubric/">
     <img src="https://img.shields.io/pypi/v/rubric" alt="PyPI version" />
@@ -9,10 +21,6 @@
     <img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License" />
   </a>
 </p>
-
-# Rubric
-
-A Python library for LLM-based evaluation using weighted rubrics.
 
 ## Installation
 
@@ -84,11 +92,13 @@ asyncio.run(main())
 ## Autograder Strategies
 
 ### PerCriterionGrader
+
 Evaluates each criterion in parallel inference calls.
 
 **Scoring Formula:**
 
 For each criterion $i$:
+
 - If verdict = MET, contribution = $w_i$
 - If verdict = UNMET, contribution = 0
 
@@ -99,6 +109,7 @@ $$
 $$
 
 Where:
+
 - $w_i$ = weight of criterion $i$
 - $\mathbb{1}[\text{verdict}_i = \text{MET}]$ = 1 if criterion is MET, 0 otherwise
 - Denominator = $\sum_{i=1}^{n} \max(0, w_i)$ (positive weights only)
@@ -106,7 +117,8 @@ Where:
 - Result clamped to [0, 1]
 
 ### PerCriterionOneShotGrader
-PerCriterionOneShotGrader makes 1 inference call that evaluates all criteria together and returns a structured output, unlike PerCriterionGrader which makes $n$ inference calls. 
+
+PerCriterionOneShotGrader makes 1 inference call that evaluates all criteria together and returns a structured output, unlike PerCriterionGrader which makes $n$ inference calls.
 
 **Scoring Formula:**
 
@@ -117,6 +129,7 @@ $$
 $$
 
 ### RubricAsJudgeGrader
+
 Holistic evaluation where the model returns a final score directly.
 
 **Scoring Formula:**
