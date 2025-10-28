@@ -93,10 +93,10 @@ $$
 $$
 
 Where:
-- $w_i$ = weight of criterion $i$ (can be negative for error criteria)
+- $w_i$ = weight of criterion $i$
 - $\mathbb{1}[\text{verdict}_i = \text{MET}]$ = 1 if criterion is MET, 0 otherwise
-- Denominator = $\sum_{i=1}^{n} \max(0, w_i)$ (sum of all positive weights only)
-- Numerator = sum of weights for MET criteria (positive weights add, negative weights subtract)
+- Denominator = $\sum_{i=1}^{n} \max(0, w_i)$ (positive weights only)
+- Numerator = sum of weights for MET criteria
 - Result clamped to [0, 1]
 
 ### PerCriterionOneShotGrader
