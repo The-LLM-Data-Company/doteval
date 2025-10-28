@@ -104,9 +104,10 @@ class PerCriterionGrader(Autograder):
 
             result = parse_json_to_dict(response)
 
-            status = result.get("criterion_status", "UNMET")
             explanation = result.get("explanation", "No explanation provided")
-            verdict = "MET" if status.upper() == "MET" else "UNMET"
+
+            criterion_status = result.get("criterion_status", "UNMET").upper()
+            verdict = "MET" if criterion_status == "MET" else "UNMET"
 
             return CriterionReport(
                 requirement=criterion.requirement,

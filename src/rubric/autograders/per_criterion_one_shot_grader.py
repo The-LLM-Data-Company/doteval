@@ -139,8 +139,8 @@ Provide your evaluation as JSON only."""
             )
 
             if eval_data:
-                status_raw = str(eval_data.get("criterion_status", "")).strip().upper()
-                verdict = "MET" if status_raw == "MET" else "UNMET"
+                criterion_status = str(eval_data.get("criterion_status", "")).strip().upper()
+                verdict = "MET" if criterion_status == "MET" else "UNMET"
                 explanation = str(eval_data.get("explanation", "No explanation provided"))
             else:
                 verdict = "UNMET"
