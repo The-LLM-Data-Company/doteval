@@ -55,9 +55,10 @@ async def test_per_criterion_grader_with_negative_criterion_unmet(sample_rubric)
         )
 
         if criterion_type == "negative":
-            return json.dumps({"issue_present": False, "explanation": "No issue detected"})
+            # For negative criteria: criterion_status="UNMET" means the error is NOT present (good!)
+            return json.dumps({"criterion_status": "UNMET", "explanation": "Error not present"})
         else:
-            return json.dumps({"criteria_met": True, "explanation": "Requirement met"})
+            return json.dumps({"criterion_status": "MET", "explanation": "Requirement met"})
 
     grader = PerCriterionGrader(generate_fn=generate_with_issue)
 

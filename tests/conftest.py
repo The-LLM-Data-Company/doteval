@@ -61,8 +61,8 @@ def per_criterion_generate_fn() -> GenerateFn:
         "Output mentions France",
         "Output is written in complete sentences",
     }
-    negative_issue_present = {
-        "Output contains profanity or offensive language": True,
+    negative_errors_present = {
+        "Output contains profanity or offensive language": False,  # Error NOT present
     }
 
     async def _generate(system_prompt: str, user_prompt: str) -> str:
@@ -70,15 +70,17 @@ def per_criterion_generate_fn() -> GenerateFn:
         criterion_type = _extract_field(type_pattern, user_prompt).lower()
 
         if criterion_type == "negative":
-            issue_present = negative_issue_present.get(criterion_text, False)
+            # For negative criteria: criterion_status="MET" means error IS present (bad)
+            # criterion_status="UNMET" means error is NOT present (good)
+            error_present = negative_errors_present.get(criterion_text, False)
             explanation = (
-                "Detected disallowed content in the output."
-                if issue_present
-                else "No disallowed content found."
+                "Error detected in the output."
+                if error_present
+                else "Error not present in the output."
             )
             return json.dumps(
                 {
-                    "issue_present": issue_present,
+                    "criterion_status": "MET" if error_present else "UNMET",
                     "explanation": explanation,
                 }
             )
@@ -91,7 +93,7 @@ def per_criterion_generate_fn() -> GenerateFn:
         )
         return json.dumps(
             {
-                "criteria_met": criteria_met,
+                "criterion_status": "MET" if criteria_met else "UNMET",
                 "explanation": explanation,
             }
         )
