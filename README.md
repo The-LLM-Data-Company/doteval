@@ -26,6 +26,7 @@ uv add rubric
 
 ```bash
 export OPENAI_API_KEY=your_api_key_here
+# Or any other model API key used in your `generate_fn`
 ```
 
 2. **Run the example below**
@@ -37,10 +38,11 @@ from openai import AsyncOpenAI
 from rubric import Rubric
 from rubric.autograders import PerCriterionGrader
 
-async def generate_with_async_openai(system_prompt: str, user_prompt: str) -> str:
+# Declare custom generate function with any model and inference provider
+async def generate_with_openai(system_prompt: str, user_prompt: str) -> str:
     client = AsyncOpenAI(api_key=os.getenv("OPENAI_API_KEY"))
     response = await client.chat.completions.create(
-        model="gpt-4o-mini",
+        model="gpt-5-mini",
         messages=[
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": user_prompt},
@@ -51,19 +53,23 @@ async def generate_with_async_openai(system_prompt: str, user_prompt: str) -> st
     return response.choices[0].message.content or ""
 
 async def main():
+    # Build rubric
     rubric = Rubric.from_dict([
         {"weight": 10.0, "requirement": "States Q4 2023 base margin as 17.2%"},
         {"weight": 8.0, "requirement": "Explicitly uses Shapley attribution for decomposition"},
         {"weight": -15.0, "requirement": "Uses total deliveries instead of cash-only deliveries"}
     ])
 
+    # Select autograder strategy
     grader = PerCriterionGrader(
-        generate_fn=generate_with_async_openai,
-        system_prompt="This overrides the default system prompt",
+        generate_fn=generate_with_openai,
+        system_prompt="This overrides the default grader system prompt",
     )
 
+    # Grade output
     result = await rubric.grade(
-        to_grade="Your text to evaluate...",
+        query="Input query..."
+        to_grade="Output to evaluate...",
         autograder=grader
     )
 
