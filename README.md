@@ -239,7 +239,7 @@ rubric = Rubric.from_file('rubric.yaml')
 
 ## Requirements
 
-- Python 3.11+
+- Python 3.10+
 - An LLM API (e.g., OpenAI, Anthropic, OpenRouter) - set appropriate API keys as environment variables
 
 ## License

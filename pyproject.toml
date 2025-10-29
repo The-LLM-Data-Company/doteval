@@ -7,7 +7,7 @@ name = "rubric"
 version = "1.2.1"
 description = "rubric"
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.10"
 license = "MIT"
 authors = [
     { name = "Gavin", email = "gavin@llmdata.com" },
@@ -20,6 +20,7 @@ classifiers = [
     "Intended Audience :: Education",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
@@ -46,7 +47,7 @@ asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 100
-target-version = "py311"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP"]
