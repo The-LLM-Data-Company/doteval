@@ -1,5 +1,5 @@
 <div align="center">
-  <img alt="The LLM Data Company" src="docs/images/Logo.png" width="160" style="max-width: 100%;">
+  <img alt="The LLM Data Company" src="https://raw.githubusercontent.com/The-LLM-Data-Company/rubric/main/docs/images/Logo.png" width="160" style="max-width: 100%;">
 </div>
 
 <h3 align="center">
