@@ -52,7 +52,7 @@ def test_from_yaml_not_list():
     yaml_string = "weight: 1.0\nrequirement: test"
     with pytest.raises(ValueError) as exc_info:
         Rubric.from_yaml(yaml_string)
-    assert "Expected a list of criteria" in str(exc_info.value)
+    assert "Dict must contain either 'sections' or 'rubric' key" in str(exc_info.value)
 
 
 def test_from_yaml_with_extra_fields():

@@ -49,18 +49,19 @@ class Rubric:
             if "rubric" in data:
                 data = data["rubric"]
 
-            if "sections" in data:
-                sections = data["sections"]
-                if not isinstance(sections, list):
+            if isinstance(data, dict):
+                if "sections" in data:
+                    sections = data["sections"]
+                    if not isinstance(sections, list):
+                        raise ValueError(
+                            f"Invalid rubric format. Expected 'sections' to be a list, "
+                            f"got {type(sections).__name__}"
+                        )
+                    data = sections
+                else:
                     raise ValueError(
-                        f"Invalid rubric format. Expected 'sections' to be a list, "
-                        f"got {type(sections).__name__}"
+                        "Invalid rubric format. Dict must contain either 'sections' or 'rubric' key"
                     )
-                data = sections
-            else:
-                raise ValueError(
-                    "Invalid rubric format. Dict must contain either 'sections' or 'rubric' key"
-                )
 
         if not isinstance(data, list):
             raise ValueError(f"Invalid rubric format. Expected a list, got {type(data).__name__}")
@@ -208,7 +209,7 @@ class Rubric:
             )
 
     @classmethod
-    def from_dict(cls, data: list[dict[str, Any]]) -> "Rubric":
-        """Create rubric from a list of dictionaries."""
+    def from_dict(cls, data: list[dict[str, Any]] | dict[str, Any]) -> "Rubric":
+        """Create rubric from a list of dictionaries or a dict with sections."""
         criteria = cls.validate_and_create_criteria(data)
         return cls(criteria)
