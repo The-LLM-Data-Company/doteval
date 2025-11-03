@@ -6,7 +6,7 @@ import json
 
 from rubric.autograders import Autograder
 from rubric.types import Criterion, EvaluationReport, GenerateFn
-from rubric.utils import parse_json_to_dict
+from rubric.utils import default_generate_fn, parse_json_to_dict
 
 DEFAULT_SYSTEM_PROMPT = """You are evaluating an output for a given query against a list of \
 criteria.
@@ -79,7 +79,12 @@ Respond ONLY with valid JSON in this exact format:
 class RubricAsJudgeGrader(Autograder):
     """Concrete autograder that requests a single holistic score from the model."""
 
-    def __init__(self, generate_fn: GenerateFn, *, system_prompt: str = DEFAULT_SYSTEM_PROMPT):
+    def __init__(
+        self,
+        generate_fn: GenerateFn = default_generate_fn,
+        *,
+        system_prompt: str = DEFAULT_SYSTEM_PROMPT,
+    ):
         super().__init__(generate_fn=generate_fn)
         self.system_prompt = system_prompt
 

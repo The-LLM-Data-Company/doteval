@@ -5,7 +5,7 @@ import json
 
 from rubric.autograders import Autograder
 from rubric.types import Criterion, CriterionReport, EvaluationReport, GenerateFn
-from rubric.utils import parse_json_to_dict
+from rubric.utils import default_generate_fn, parse_json_to_dict
 
 DEFAULT_SYSTEM_PROMPT = """You are evaluating an output for a given query against a single \
 criterion.
@@ -80,7 +80,12 @@ Return only raw JSON starting with {, no back-ticks, no 'json' prefix."""
 class PerCriterionGrader(Autograder):
     """Concrete autograder that evaluates each criterion independently."""
 
-    def __init__(self, generate_fn: GenerateFn, *, system_prompt: str = DEFAULT_SYSTEM_PROMPT):
+    def __init__(
+        self,
+        generate_fn: GenerateFn = default_generate_fn,
+        *,
+        system_prompt: str = DEFAULT_SYSTEM_PROMPT,
+    ):
         super().__init__(generate_fn=generate_fn)
         self.system_prompt = system_prompt
 
