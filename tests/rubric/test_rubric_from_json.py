@@ -48,7 +48,7 @@ def test_from_json_not_list():
     json_string = '{"weight": 1.0, "requirement": "test"}'
     with pytest.raises(ValueError) as exc_info:
         Rubric.from_json(json_string)
-    assert "Expected a list of criteria" in str(exc_info.value)
+    assert "Dict must contain either 'sections' or 'rubric' key" in str(exc_info.value)
 
 
 def test_from_json_with_extra_fields():

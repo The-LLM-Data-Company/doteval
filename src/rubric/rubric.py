@@ -34,23 +34,72 @@ class Rubric:
         return await autograder.grade(to_grade=to_grade, rubric=self.rubric)
 
     @staticmethod
-    def validate_and_create_criteria(data: list[dict[str, Any]]) -> list[Criterion]:
-        """Validate and create Criterion objects from raw data."""
-        if not isinstance(data, list):
-            raise ValueError(
-                f"Invalid rubric format. Expected a list of criteria, got {type(data).__name__}"
-            )
+    def validate_and_create_criteria(
+        data: list[dict[str, Any]] | dict[str, Any],
+    ) -> list[Criterion]:
+        """Validate and create Criterion objects from raw data.
 
-        criteria = []
+        Supports multiple formats:
+        - Flat list of criteria
+        - List of sections with criteria
+        - Dict with 'sections' key containing list of sections
+        - Dict with 'rubric' key containing sections
+        """
+        if isinstance(data, dict):
+            if "rubric" in data:
+                data = data["rubric"]
+
+            if isinstance(data, dict):
+                if "sections" in data:
+                    sections = data["sections"]
+                    if not isinstance(sections, list):
+                        raise ValueError(
+                            f"Invalid rubric format. Expected 'sections' to be a list, "
+                            f"got {type(sections).__name__}"
+                        )
+                    data = sections
+                else:
+                    raise ValueError(
+                        "Invalid rubric format. Dict must contain either 'sections' or 'rubric' key"
+                    )
+
+        if not isinstance(data, list):
+            raise ValueError(f"Invalid rubric format. Expected a list, got {type(data).__name__}")
+
+        if not data:
+            raise ValueError("No criteria found")
+
+        flattened_criteria_data = []
         for idx, item in enumerate(data):
             if not isinstance(item, dict):
                 raise ValueError(
-                    f"Invalid criterion at index {idx} expected a dictionary, "
-                    f"got {type(item).__name__}"
+                    f"Invalid item at index {idx}: expected a dictionary, got {type(item).__name__}"
+                )
+
+            if "criteria" in item:
+                section_criteria = item["criteria"]
+                if not isinstance(section_criteria, list):
+                    raise ValueError(
+                        f"Invalid section at index {idx}: 'criteria' must be a list, "
+                        f"got {type(section_criteria).__name__}"
+                    )
+                flattened_criteria_data.extend(section_criteria)
+            else:
+                flattened_criteria_data.append(item)
+
+        if not flattened_criteria_data:
+            raise ValueError("No criteria found")
+
+        criteria = []
+        for idx, criterion_data in enumerate(flattened_criteria_data):
+            if not isinstance(criterion_data, dict):
+                raise ValueError(
+                    f"Invalid criterion at index {idx}: expected a dictionary, "
+                    f"got {type(criterion_data).__name__}"
                 )
 
             try:
-                criteria.append(Criterion(**item))  # type: ignore[arg-type]
+                criteria.append(Criterion(**criterion_data))  # type: ignore[arg-type]
             except ValidationError as e:
                 error_details = []
                 for error in e.errors():
@@ -61,9 +110,6 @@ class Rubric:
                 raise ValueError(error_msg) from e
             except Exception as e:
                 raise ValueError(f"Failed to create criterion at index {idx}: {e}") from e
-
-        if not criteria:
-            raise ValueError("No criteria found")
 
         return criteria
 
@@ -163,7 +209,7 @@ class Rubric:
             )
 
     @classmethod
-    def from_dict(cls, data: list[dict[str, Any]]) -> "Rubric":
-        """Create rubric from a list of dictionaries."""
+    def from_dict(cls, data: list[dict[str, Any]] | dict[str, Any]) -> "Rubric":
+        """Create rubric from a list of dictionaries or a dict with sections."""
         criteria = cls.validate_and_create_criteria(data)
         return cls(criteria)
