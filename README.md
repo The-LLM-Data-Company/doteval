@@ -74,7 +74,7 @@ async def main():
 
     # Grade output
     result = await rubric.grade(
-        query="Input query..."
+        query="Input query...",
         to_grade="Output to evaluate...",
         autograder=grader
     )
